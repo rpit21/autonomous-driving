@@ -19,8 +19,8 @@ Install libraries:
 
 ```bash
 python -m pip install --upgrade pip
-pip install torch torchvision torchaudio
-pip install transformers timm
-pip install numpy matplotlib tqdm
-pip install opencv-python
+python -m pip install torch torchvision torchaudio
+python -m pip install transformers timm
+python -m pip install numpy matplotlib tqdm
+python -m pip install opencv-python
 ```
