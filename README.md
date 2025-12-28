@@ -111,6 +111,18 @@ Makes the VIT to not be trained
 >In case of training the VIT you can put it in unfreeze mode
 
 ---
+The VIT model that we are using has this characteristics
+
+| Propiedad           | Valor   |
+| ------------------- | ------- |
+| Patch size          | 16×16   |
+| Imagen              | 224×224 |
+| Embedding dim (`D`) | **768** |
+| Nº capas            | 12      |
+| Nº cabezas          | 12      |
+
+
+---
 The logic For only one frame: 
 
 ```Mathematica
