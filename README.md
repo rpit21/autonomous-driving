@@ -3,17 +3,15 @@
 ## Pipeline
 
 ```scss
-video BVDD
-    - frames (k consecutives)
-    - sensor (velocity, angle)
-        |
-viT (for frames)
-        |
-Token temporales (K)
-        |
-Temporal transformer
-        |
-Action prediction 
+Frames
+ → ViT
+ → CLS token per frame
+ → (concatenate sensors per frame)  
+ → Time Transformer
+ → ft (estado presente)
+ → MLP
+ → steering / accel
+
 
 ```
 
@@ -86,7 +84,7 @@ Reshape:
 
 ```
 
-## VIT function
+## VIT Encoder functionality
 
 The data set give: `frames: [B, K, 3, 244, 244]`
 
@@ -113,13 +111,13 @@ Makes the VIT to not be trained
 ---
 The VIT model that we are using has this characteristics
 
-| Propiedad           | Valor   |
+| Property            | Value   |
 | ------------------- | ------- |
 | Patch size          | 16×16   |
-| Imagen              | 224×224 |
+| Image               | 224×224 |
 | Embedding dim (`D`) | **768** |
-| Nº capas            | 12      |
-| Nº cabezas          | 12      |
+| Nº layer            | 12      |
+| Nº heads            | 12      |
 
 
 ---
@@ -141,6 +139,23 @@ Transformer (VIT)
 Output = N + 1 tokens
 ```
 
+## Time transformer
+Its objective it is to:
+
+- To take a sequences of temporal states
+- Create a final representation of the actual time state
+
+```Mathematica
+Input:  [B, K, D]   ← embeddings por frame (CLS + sensores luego)
+Output: [B, H]      ← embedding temporal final
+```
+
+1-2 Layer
+
+Multi-head self-attention
+
+Output: Last temporal token 
+
 ## What I need to do
 Checklist to see if we are ready to work:
 
@@ -152,8 +167,8 @@ Checklist to see if we are ready to work:
 
 ✅ Dataset descargándose
 
-⬜ Dataset loader propio
-⬜ Decisión final de targets (stearing wheel and aceleration)
+✅ Dataset loader propio
+✅ Decisión final de targets (stearing wheel and aceleration)
 ⬜ Arquitectura definida en código (no idead)
 ⬜ Reparto de tareas
 ⬜ README mínimo (In progresss)
