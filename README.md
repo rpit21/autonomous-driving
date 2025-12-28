@@ -163,6 +163,16 @@ It is the one who generates the final desition
 - Input: time transforme output
 - Output: actions `[a_steer, a_accel]`
 
+## Driving Model
+
+1. Take a batch form the real data set (frames are `[B,K,3,224,224]`)
+
+2. The model make:
+    - ViTFrameEncoder `frames -> [B,K,768]` (selecting only CLS token)
+    - Concatenate sensor (OFF right now) `use_sensors=False`
+    - Time Transformer (`[B,K,768] -> [B,256]` actual temporal state)
+    - MLP (`[B,256] -> [B,2]` stearing and acceleration)
+
 ## What I need to do
 Checklist to see if we are ready to work:
 
@@ -176,6 +186,6 @@ Checklist to see if we are ready to work:
 
 ✅ Dataset loader propio
 ✅ Decisión final de targets (stearing wheel and aceleration)
-⬜ Arquitectura definida en código (no idead)
+⬜ Arquitectura definida en código (no idea)
 ⬜ Reparto de tareas
 ⬜ README mínimo (In progresss)
