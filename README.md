@@ -22,17 +22,21 @@ project/
 │── data/
 │   └── bddv_subset/
 │
-│── models/
-│   ├── vit_encoder.py
-│   └── temporal_transformer.py
-│
 │── dataset/
 │   └── bddv_dataset.py
 │
+│── models/
+│   ├── vit_encoder.py
+│   ├── time_transformer.py
+│   ├── mlp_head.py
+│   └── driving_model.py
+│
+│── train_one_step.py
 │── train.py
 │── eval.py
 │── requirements.txt
 │── README.md
+
 ```
 
 ## Requeriments
@@ -208,7 +212,32 @@ Checklist to see if we are ready to work:
 ✅ Dataset descargándose
 
 ✅ Dataset loader propio
+
 ✅ Decisión final de targets (stearing wheel and aceleration)
-⬜ Arquitectura definida en código (no idea)
+
+✅ Arquitectura definida en código (no idea)
+
 ⬜ Reparto de tareas
-⬜ README mínimo (In progresss)
+
+✅ README mínimo (In progresss)
+
+
+## Team workflow
+
+The project is divided into three independent modules:
+
+1. Dataset & Sensors
+   - Video loading
+   - Sensor extraction and normalization
+   - Target generation
+
+2. Model & Training
+   - ViT + Temporal Transformer + MLP
+   - Training loop
+   - Debugging
+
+3. Evaluation
+   - MAE / RMSE metrics
+   - Plots and tables
+   - Final report
+
