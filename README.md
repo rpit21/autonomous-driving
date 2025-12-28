@@ -200,27 +200,6 @@ The training loop will make:
 4. `optimizer.step()` Adam update weights
 
 
-## What I need to do
-Checklist to see if we are ready to work:
-
-✅ Repo creado
-
-✅ Python + venv
-
-✅ Transformers instalados
-
-✅ Dataset descargándose
-
-✅ Dataset loader propio
-
-✅ Decisión final de targets (stearing wheel and aceleration)
-
-✅ Arquitectura definida en código (no idea)
-
-⬜ Reparto de tareas
-
-✅ README mínimo (In progresss)
-
 
 ## Team workflow
 
@@ -240,4 +219,3 @@ The project is divided into three independent modules:
    - MAE / RMSE metrics
    - Plots and tables
    - Final report
-
