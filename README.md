@@ -1,6 +1,45 @@
-# autonomous-driving
+# Autonomous-Driving
+
+## Pipeline
+
+```scss
+video BVDD
+    - frames (k consecutives)
+    - sensor (velocity, angle)
+        |
+viT (for frames)
+        |
+Token temporales (K)
+        |
+Temporal transformer
+        |
+Action prediction 
+
+```
+
+## Structure of the project
+
+```javascript
+project/
+│── data/
+│   └── bddv_subset/
+│
+│── models/
+│   ├── vit_encoder.py
+│   └── temporal_transformer.py
+│
+│── dataset/
+│   └── bddv_dataset.py
+│
+│── train.py
+│── eval.py
+│── requirements.txt
+│── README.md
+```
 
 ## Requeriments
+
+Install Python 3.10.11
 
 ### Virtual enviroment
 
@@ -24,3 +63,27 @@ python -m pip install transformers timm
 python -m pip install numpy matplotlib tqdm
 python -m pip install opencv-python
 ```
+
+## Dataset objetive
+Its main goal is to convert "raw videos" in to samples that contains:
+
+- Inputs: temporal windows with K consecutives frames `[K, 3, H, W]`
+- Sensors: velocity, yaw, etc..
+- Label (target): the "next" action (steering, aceleration)
+
+## What I need to do
+Checklist to see if we are ready to work:
+
+✅ Repo creado
+
+✅ Python + venv
+
+✅ Transformers instalados
+
+✅ Dataset descargándose
+
+⬜ Dataset loader propio
+⬜ Decisión final de targets (stearing wheel and aceleration)
+⬜ Arquitectura definida en código (no idead)
+⬜ Reparto de tareas
+⬜ README mínimo (In progresss)
