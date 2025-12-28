@@ -88,7 +88,30 @@ Reshape:
 
 ## VIT function
 
-For only one frame 
+The data set give: `frames: [B, K, 3, 244, 244]`
+
+But for the "Temporal transformer"  it needs vectors. That is why it is necesarry a VIT encoder wich:
+
+- Each frame -> VIT -> output: 1 summary vector (CLS Token)
+- K frames -> K vectors/tokens
+
+Expected Output:
+
+`[B, K, D]`
+
+> D is the size of the embedding of VIT. Remeber K is the time window, B batch size
+
+> The reason why we reshape `[B, K, 3, H, W] → [B*K, 3, H, W]` is to make the VIT to process al the images together
+
+---
+Freeze On
+
+Makes the VIT to not be trained
+
+>In case of training the VIT you can put it in unfreeze mode
+
+---
+The logic For only one frame: 
 
 ```Mathematica
 Image
