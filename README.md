@@ -199,6 +199,55 @@ The training loop will make:
 3. `loss.backward()` which is the gradient
 4. `optimizer.step()` Adam update weights
 
+```pgsql
+videos/ (raw .mov)
+   |
+   v
+BDDVDataset.__getitem__(idx)
+   |
+   |-- reads K frames -> tensor [K,3,224,224]
+   |-- returns (frames, info)
+   v
+DataLoader (batching)
+   |
+   |-- stacks B items -> frames [B,K,3,224,224]
+   v
+Training loop
+   |
+   |-- frames.to(device)
+   |-- preds = model(frames)
+   |       |
+   |       |-- ViT: [B,K,3,224,224] -> [B,K,768]
+   |       |-- TimeTransformer: [B,K,768] -> [B,256]
+   |       |-- MLP: [B,256] -> [B,2]
+   |
+   |-- loss = MSE(preds, targets)
+   |-- backward()
+   |-- optimizer.step()
+   v
+weights updated
+
+```
+### Intentional Overfitting 
+Overfitting means = the model memorize all the train data
+- This doesn't generalize
+- Don't work with new data
+
+But, also means:
+
+The model has the sufficient capacity and it is well conected.
+
+> If the model cannot be overfit the model is not working properly it.
+
+To make intentional Overfitting:
+Train loss = 0
+
+**Results:** It generates a overfit --> model is capable to learn
+
+> My modelo end-to-end is trainable and able to memorize a visual sequence.
+
+### Save of the weights - Checkpoints
+
 
 
 ## Team workflow
