@@ -102,22 +102,34 @@ class BDDVDataset(Dataset):
         """
         return len(self.index)
 
+    
     def __getitem__(self, idx: int):
         """
-        Return one sample:
-            - frames: [K, 3, H, W]
-            - info: metadata for debugging
+        Return one sample. If decoding fails for a particular clip (common with some .mov),
+        we retry a few times by sampling a different index instead of crashing.
         """
-        video_path, start_frame = self.index[idx]
-        frames = self._read_clip(video_path, start_frame)
+        max_retries = 10
+        last_err = None
 
-        info = {
-            "video_path": video_path,
-            "start_frame": start_frame,
-            "clip_len": self.cfg.clip_len,
-            "frame_step": self.cfg.frame_step,
-        }
-        return frames, info
+        for _ in range(max_retries):
+            video_path, start_frame = self.index[idx]
+            try:
+                frames = self._read_clip(video_path, start_frame)
+                info = {
+                    "video_path": video_path,
+                    "start_frame": start_frame,
+                    "clip_len": self.cfg.clip_len,
+                    "frame_step": self.cfg.frame_step,
+                }
+                return frames, info
+            except RuntimeError as e:
+                last_err = e
+                # pick another random index and try again
+                idx = torch.randint(0, len(self.index), (1,)).item()
+
+        # If everything fails, raise the last error
+        raise last_err
+
 
     # ------------------------ helper functions ------------------------
 
@@ -165,6 +177,8 @@ class BDDVDataset(Dataset):
 
             # Last valid starting frame so that we can still read a full clip
             last_start = n - needed
+            #safety_margin = 30  # frames
+            #last_start = (n - needed) - safety_margin
             if last_start <= 0:
                 continue
 
