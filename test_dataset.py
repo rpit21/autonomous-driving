@@ -5,7 +5,7 @@ def main():
     cfg = BDDVDatasetConfig(
         root_dir="data/bddv/videos",
         clip_len=10,      # K frames
-        stride=10,        # menos clips para debug
+        stride=10,        # less clips for debug
         frame_step=1,
         resize_hw=(224, 224),
     )
@@ -23,9 +23,9 @@ def main():
 
     frames, info = next(iter(loader))
 
-    print("Frames shape:", frames.shape)
+    print("Frames shape:", frames.shape) # batch_size, k frames for clip, RGB channels, size for frame
     print("Frames dtype:", frames.dtype)
-    print("Frames min/max:", frames.min().item(), frames.max().item())
+    print("Frames min/max:", frames.min().item(), frames.max().item()) #Normalized
 
     print("\nSample info:")
     for k, v in info.items():

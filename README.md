@@ -67,9 +67,44 @@ python -m pip install opencv-python
 ## Dataset objetive
 Its main goal is to convert "raw videos" in to samples that contains:
 
-- Inputs: temporal windows with K consecutives frames `[K, 3, H, W]`
-- Sensors: velocity, yaw, etc..
+- Inputs: temporal windows with K consecutives frames and B batch size (clips in paralle) `[B, K, RGB:3, H, W]`
 - Label (target): the "next" action (steering, aceleration)
+
+
+```
+Input:
+[B, K, 3, 224, 224]
+
+Reshape:
+[B*K, 3, 224, 224]
+
+ViT:
+[B*K, D]
+
+Reshape:
+[B, K, D]  ≡  [st-k, ..., st]
+
+```
+
+## VIT function
+
+For only one frame 
+
+```Mathematica
+Image
+↓
+Divide in patches → N patches
+↓
+Embedding each patch → N tokens
+↓
+Include 1 extra token → [CLS]
+↓
+Total tokens = N + 1
+↓
+Transformer (VIT)
+↓
+Output = N + 1 tokens
+```
 
 ## What I need to do
 Checklist to see if we are ready to work:
