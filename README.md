@@ -173,6 +173,29 @@ It is the one who generates the final desition
     - Time Transformer (`[B,K,768] -> [B,256]` actual temporal state)
     - MLP (`[B,256] -> [B,2]` stearing and acceleration)
 
+
+## Training 
+As we are trying to predict continuous values we are going to use:
+
+Mean Squared Error Loss:
+- Check how much you get wrong `y - ŷ`
+- Increse at square (penalize big errors)
+- Make the mean
+
+> It is not usede Cross-entropy because is for clasification
+> MAE (Mean Absolute error) is an alternative option but it is less strong
+
+It is used ADAM because it is an optimizer way to make Gradient descendant
+- Remember past gradients and avoid zig zags
+- Each parameter has its own learning rate
+
+The training loop will make:
+1. `y_pred = model(frames)`
+2. `loss = MSE(y_pred, y_true)`
+3. `loss.backward()` which is the gradient
+4. `optimizer.step()` Adam update weights
+
+
 ## What I need to do
 Checklist to see if we are ready to work:
 
