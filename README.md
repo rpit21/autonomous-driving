@@ -154,7 +154,14 @@ Output: [B, H]      ← embedding temporal final
 
 Multi-head self-attention
 
-Output: Last temporal token 
+Output: Last temporal token
+
+## MLP Objective
+
+It is the one who generates the final desition
+
+- Input: time transforme output
+- Output: actions `[a_steer, a_accel]`
 
 ## What I need to do
 Checklist to see if we are ready to work:
