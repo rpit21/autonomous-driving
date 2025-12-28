@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -11,6 +12,12 @@ from models.vit_encoder import ViTEncoderConfig
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
+
+    # ======================
+    # Paths
+    # ======================
+    ckpt_dir = "checkpoints"
+    os.makedirs(ckpt_dir, exist_ok=True)
 
     # ======================
     # Dataset & DataLoader
@@ -60,7 +67,8 @@ def main():
     # ======================
     # Training loop
     # ======================
-    num_epochs = 3
+    num_epochs = 1 #3
+    best_loss = float("inf")
 
     for epoch in range(num_epochs):
         epoch_loss = 0.0
@@ -68,7 +76,7 @@ def main():
         for frames, _ in tqdm(loader, desc=f"Epoch {epoch+1}/{num_epochs}"):
             frames = frames.to(device)
 
-            # TEMPORARY dummy targets (until dataset provides real ones)
+            # Temporary dummy targets
             targets = torch.zeros(frames.size(0), 2, device=device)
 
             preds = model(frames)
@@ -82,6 +90,20 @@ def main():
 
         epoch_loss /= len(loader)
         print(f"Epoch {epoch+1} - Avg loss: {epoch_loss:.6f}")
+
+        # ======================
+        # Save checkpoint
+        # ======================
+        ckpt_path = os.path.join(ckpt_dir, f"epoch_{epoch+1}.pt")
+        torch.save(model.state_dict(), ckpt_path)
+        print(f"Saved checkpoint: {ckpt_path}")
+
+        # Save best model
+        if epoch_loss < best_loss:
+            best_loss = epoch_loss
+            best_path = os.path.join(ckpt_dir, "best.pt")
+            torch.save(model.state_dict(), best_path)
+            print(f"New best model saved (loss={best_loss:.6f})")
 
     print("Training finished.")
 

@@ -247,7 +247,23 @@ Train loss = 0
 > My modelo end-to-end is trainable and able to memorize a visual sequence.
 
 ### Save of the weights - Checkpoints
+Normally all the train data is save on the RAM but when the script ends it desappear.
 
+For that is importat to save all the weights in a file 
+
+```py
+torch.save(model.state_dict(), "model.pt")
+```
+
+Normally it has to be saved at the final of the training 
+
+To load the weight you can use:
+
+```py
+model = DrivingModel(cfg)
+model.load_state_dict(torch.load("overfit_model.pt"))
+model.eval()
+```
 
 
 ## Team workflow
