@@ -168,6 +168,79 @@ bddv_dataset.py
     ├── Load sensor data from info.json
     ├── Compute target [steering, acceleration]
     └── Return (frames, sensors, targets)
+### Dataset Semantics and Usage
+
+Each call to `__getitem__` returns **one temporal sample**.
+Batching and shuffling are handled externally by PyTorch’s `DataLoader`.
+
+---
+
+### Temporal Alignment
+
+All components within a sample are **temporally aligned**:
+
+- Frame *t* corresponds to sensor values at time *t*
+- The target represents the control action taken at time *t*
+
+This alignment ensures the model learns **causal temporal relationships**
+rather than frame-wise correlations.
+
+---
+
+### Why Temporal Windows?
+
+Using temporal windows instead of single frames enables the model to learn:
+
+- Motion and scene dynamics
+- Vehicle behavior over time
+- Smooth and stable control actions
+
+This is essential for predicting **continuous steering and acceleration**
+in end-to-end driving models.
+
+---
+
+### Design Principles
+
+- Video-based temporal input instead of single images
+- Fixed-length temporal windows for efficient batching
+- Continuous control prediction (regression)
+- Clear separation of responsibilities:
+  - **Dataset** → data preparation
+  - **Model** → representation learning
+  - **Training** → optimization
+
+---
+
+### Dataset Responsibilities
+
+**Handled by the dataset**
+- Video loading and decoding
+- Temporal frame slicing
+- Sensor extraction and alignment
+- Target computation
+
+**Not handled by the dataset**
+- Batching and shuffling
+- Device transfer (CPU/GPU)
+- Temporal modeling
+- Loss computation
+
+---
+
+### Intended Usage
+
+```python
+dataset = BDDVDataset(cfg)
+loader = DataLoader(dataset, batch_size=B, shuffle=True)
+
+for frames, sensors, targets in loader:
+    preds = model(frames, sensors)
+    loss = criterion(preds, targets)
+
+
+
+
 
 
 
