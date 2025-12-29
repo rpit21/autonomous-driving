@@ -73,12 +73,12 @@ def main():
     # ======================
     # Main switches
     # ======================
-    USE_REAL_TARGETS = False  # <-- change to True when your dataset returns real targets
-    USE_SENSORS = False       # <-- change to True when your dataset returns sensors
-    SENSOR_DIM = 0            # <-- set to S when USE_SENSORS=True (e.g., 2)
+    USE_REAL_TARGETS = True  # <-- change to True when your dataset returns real targets
+    USE_SENSORS = True       # <-- change to True when your dataset returns sensors
+    SENSOR_DIM = 4            # <-- set to S when USE_SENSORS=True (e.g., 2)
 
     PREDICT_DIM = 2           # steering + accel
-    NUM_EPOCHS = 3
+    NUM_EPOCHS = 2
     LR = 1e-4
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
