@@ -97,6 +97,80 @@ DataLoader
 ```
 
 > Dataset: defines the input of the model 
+## Dataset: BDDV Temporal Driving Dataset
+
+### Overview
+
+This project uses a custom dataset built on top of BDD100K driving videos, referred to as **BDDV** (BDD Video).
+The dataset converts raw driving videos and their associated metadata into **temporally consistent samples**
+suitable for end-to-end autonomous driving models.
+
+Each dataset sample represents a short driving sequence and contains:
+- A temporal window of consecutive RGB frames
+- Synchronized vehicle sensor data
+- The corresponding continuous driving action
+
+The dataset implementation is located in:
+
+dataset/bddv_dataset.py
+---
+
+### Dataset Objective
+
+The objective of the dataset is to enable learning of the following mapping:
+(visual observations over time, sensor states over time) → driving action at current time
+
+Rather than using single images, the dataset provides **fixed-length temporal windows** to capture motion,
+vehicle dynamics, and delayed control effects.
+
+---
+
+### Sample Structure
+
+For each dataset index, the dataset returns:
+
+| Component | Shape | Description |
+|---------|------|-------------|
+| `frames` | `[K, 3, 224, 224]` | K consecutive RGB frames |
+| `sensors` | `[K, S]` | Sensor values aligned with each frame (optional) |
+| `targets` | `[2]` | Continuous control targets `[steering, acceleration]` |
+
+After batching with a PyTorch `DataLoader`:
+
+| Component | Shape |
+|---------|------|
+| `frames` | `[B, K, 3, 224, 224]` |
+| `sensors` | `[B, K, S]` |
+| `targets` | `[B, 2]` |
+
+Where:
+- **B** = batch size  
+- **K** = temporal window length  
+- **S** = number of sensor channels  
+
+---
+
+### Dataset Pipeline
+
+The dataset follows the pipeline below to generate each sample:
+
+
+---
+
+### `__getitem__` Logic
+
+```text
+bddv_dataset.py
+└── __getitem__(idx)
+    ├── Load video corresponding to idx
+    ├── Extract K consecutive frames
+    ├── Resize frames to 224×224
+    ├── Load sensor data from info.json
+    ├── Compute target [steering, acceleration]
+    └── Return (frames, sensors, targets)
+Note:
+The dataset returns a single temporal sample.
+Batching and shuffling are handled externally by the DataLoader.
 
 
 ## VIT Encoder functionality (vit_encoder.py)
