@@ -168,9 +168,7 @@ bddv_dataset.py
     ├── Load sensor data from info.json
     ├── Compute target [steering, acceleration]
     └── Return (frames, sensors, targets)
-Note:
-The dataset returns a single temporal sample.
-Batching and shuffling are handled externally by the DataLoader.
+
 
 
 ## VIT Encoder functionality (vit_encoder.py)
