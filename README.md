@@ -89,6 +89,8 @@ bddv_dataset.py
     ├── Calculate target → targets [2]
     └── return frames, sensors, targets
 
+#Batching logic outside the dataset
+
 DataLoader
 └── Gather B samples
     └── batch = (frames[B,...], sensors[B,...], targets[B,...])
