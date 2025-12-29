@@ -66,6 +66,12 @@ python -m pip install numpy matplotlib tqdm
 python -m pip install opencv-python
 ```
 
+Another way to install all the libraries used in the proyect use this comand:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Dataset objetive
 Its main goal is to convert "raw videos" in to samples that contains:
 
