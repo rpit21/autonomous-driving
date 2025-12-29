@@ -72,29 +72,32 @@ Another way to install all the libraries used in the proyect use this comand:
 pip install -r requirements.txt
 ```
 
-## Dataset objetive
-Its main goal is to convert "raw videos" in to samples that contains:
+## Dataset objetive (bddv_dataset.py)
+Its main goal is to convert "raw videos" wiht its information in to samples that contains:
 
 - Inputs: temporal windows with K consecutives frames and B batch size (clips in paralle) `[B, K, RGB:3, H, W]`
-- Label (target): the "next" action (steering, aceleration)
+- Sensors: temporal window of K consecutives sensors information `[B, K, S]`
+- Targets: the action taken (steering, aceleration) `[2]`
 
 
+### Dataset Pipline:
+```rust
+bddv_dataset.py
+└── __getitem__(idx)
+    ├── Read video → frames [K,3,224,224]
+    ├── Read info.json → sensors [K,S]
+    ├── Calculate target → targets [2]
+    └── return frames, sensors, targets
+
+DataLoader
+└── Gather B samples
+    └── batch = (frames[B,...], sensors[B,...], targets[B,...])
 ```
-Input:
-[B, K, 3, 224, 224]
 
-Reshape:
-[B*K, 3, 224, 224]
+> Dataset: defines the input of the model 
 
-ViT:
-[B*K, D]
 
-Reshape:
-[B, K, D]  ≡  [st-k, ..., st]
-
-```
-
-## VIT Encoder functionality
+## VIT Encoder functionality (vit_encoder.py)
 
 The data set give: `frames: [B, K, 3, 244, 244]`
 
@@ -111,15 +114,32 @@ Expected Output:
 
 > The reason why we reshape `[B, K, 3, H, W] → [B*K, 3, H, W]` is to make the VIT to process al the images together
 
+Sumary of VIT data:
+
+```
+Input:
+[B, K, 3, 224, 224]
+
+Reshape:
+[B*K, 3, 224, 224]
+
+ViT:
+[B*K, D]
+
+Reshape:
+[B, K, D]  ≡  [st-k, ..., st]
+
+```
+
 ---
-Freeze On
+### Freeze Mode
 
-Makes the VIT to not be trained
+**Freeze ON** --> Makes the VIT to not be trained
 
->In case of training the VIT you can put it in unfreeze mode
+>In case of training the VIT you can put it in *unfreeze mode*
 
 ---
-The VIT model that we are using has this characteristics
+### VIT model characteristics
 
 | Property            | Value   |
 | ------------------- | ------- |
@@ -131,6 +151,8 @@ The VIT model that we are using has this characteristics
 
 
 ---
+### VIT PIP line logic 
+
 The logic For only one frame: 
 
 ```Mathematica
@@ -149,14 +171,15 @@ Transformer (VIT)
 Output = N + 1 tokens
 ```
 
-## Time transformer
+
+## Time transformer (time_transformer.py)
 Its objective it is to:
 
 - To take a sequences of temporal states
 - Create a final representation of the actual time state
 
 ```Mathematica
-Input:  [B, K, D]   ← embeddings por frame (CLS + sensores luego)
+Input:  [B, K, D]   ← embeddings por frame (CLS + sensors)
 Output: [B, H]      ← embedding temporal final
 ```
 
@@ -166,14 +189,14 @@ Multi-head self-attention
 
 Output: Last temporal token
 
-## MLP Objective
+## MLP Objective (mpl_head.py)
 
 It is the one who generates the final desition
 
 - Input: time transforme output
 - Output: actions `[a_steer, a_accel]`
 
-## Driving Model
+## Driving Model (driving_model.py)
 
 1. Take a batch form the real data set (frames are `[B,K,3,224,224]`)
 
@@ -184,7 +207,7 @@ It is the one who generates the final desition
     - MLP (`[B,256] -> [B,2]` stearing and acceleration)
 
 
-## Training 
+## Training (train.py)
 As we are trying to predict continuous values we are going to use:
 
 Mean Squared Error Loss:
@@ -234,6 +257,29 @@ Training loop
 weights updated
 
 ```
+
+```rust
+dataset[idx] -> one sample
+      |
+DataLoader (batch_size=B)
+      |
+batch = tuple of B samples
+      |
+unpack_batch(batch)
+      |
+frames   [B,K,3,224,224]
+sensors  [B,K,S] or None
+targets  [B,2]
+      |
+model(frames, sensors)
+      |
+preds [B,2]
+      |
+loss(preds, targets)
+      |
+backward + optimizer.step
+
+```
 ### Intentional Overfitting 
 Overfitting means = the model memorize all the train data
 - This doesn't generalize
@@ -270,6 +316,10 @@ model = DrivingModel(cfg)
 model.load_state_dict(torch.load("overfit_model.pt"))
 model.eval()
 ```
+
+### Train Indications
+- Save check points
+- Implementation of debug Mode
 
 
 ## Team workflow
