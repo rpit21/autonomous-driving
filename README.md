@@ -159,7 +159,7 @@ The dataset follows the pipeline below to generate each sample:
 
 ### `__getitem__` Logic
 
-```text
+```text 
 bddv_dataset.py
 └── __getitem__(idx)
     ├── Load video corresponding to idx
@@ -168,6 +168,8 @@ bddv_dataset.py
     ├── Load sensor data from info.json
     ├── Compute target [steering, acceleration]
     └── Return (frames, sensors, targets)
+```
+
 ### Dataset Semantics and Usage
 
 Each call to `__getitem__` returns **one temporal sample**.
