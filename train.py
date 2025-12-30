@@ -78,7 +78,7 @@ def main():
     SENSOR_DIM = 4            # <-- set to S when USE_SENSORS=True (e.g., 2)
 
     PREDICT_DIM = 2           # steering + accel
-    NUM_EPOCHS = 2
+    NUM_EPOCHS = 5
     LR = 1e-4
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -94,7 +94,7 @@ def main():
     # Dataset & DataLoader
     # ======================
     ds_cfg = BDDVDatasetConfig(
-        root_dir="data/bddv/videos",
+        root_dir="data/bddv/train",
         clip_len=10,
         stride=10,
         frame_step=1,

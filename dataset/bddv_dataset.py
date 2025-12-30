@@ -16,8 +16,9 @@ VIDEO_EXTS = {".mp4", ".mov", ".avi", ".mkv"}
 
 @dataclass
 class BDDVDatasetConfig:
-    root_dir: str = "data/bddv/videos"
-    info_dir: str = "data/bddv/info"
+    root_dir: str = "data/bddv/train"   # or data/bddv/val
+    videos_subdir: str = "videos"
+    info_subdir: str = "info"
     clip_len: int = 10
     stride: int = 1
     frame_step: int = 1
@@ -31,8 +32,19 @@ class BDDVDatasetConfig:
 class BDDVDataset(Dataset):
 
     def __init__(self, cfg: BDDVDatasetConfig):
+
         self.cfg = cfg
+        
         self.root = Path(cfg.root_dir)
+
+        self.videos_dir = self.root / cfg.videos_subdir
+        self.info_dir   = self.root / cfg.info_subdir
+
+        if not self.videos_dir.exists():
+            raise FileNotFoundError(self.videos_dir)
+
+        if not self.info_dir.exists():
+            raise FileNotFoundError(self.info_dir)
 
         # NOTE: placeholder normalization, to be refined if needed
         # Sensor normalization (ax, ay, az, |a|)
@@ -40,19 +52,13 @@ class BDDVDataset(Dataset):
         self.sensor_std  = torch.tensor([1.0, 1.0, 1.0, 0.5])
 
         # Info JSONs
-        self.info_dir = Path(cfg.info_dir)
-        if not self.info_dir.exists():
-            raise FileNotFoundError(self.info_dir)
-
+        #Map video_id -> info.json
         self.video_to_info: Dict[str, Path] = {
             jp.stem: jp for jp in self.info_dir.glob("*.json")
         }
 
-        # Videos
-        if not self.root.exists():
-            raise FileNotFoundError(self.root)
-
-        self.videos = self._discover_videos(self.root)
+        # Discover Videos
+        self.videos = self._discover_videos(self.videos_dir)
 
         self.video_num_frames = {}
         for vp in self.videos:

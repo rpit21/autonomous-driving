@@ -488,4 +488,4 @@ The project is divided into three independent modules:
 3. Evaluation
    - MAE / RMSE metrics
    - Plots and tables
-   - Final report
+
