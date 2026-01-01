@@ -136,10 +136,8 @@ class BDDVDataset(Dataset):
                 gyro_seq = np.array(gyro_seq)
 
                 # Simple smoothing (no scipy)
-                if len(gyro_seq) >= 7:
-                    gyro_seq = np.convolve(
-                        gyro_seq, np.ones(7)/7, mode="same"
-                    )
+                #if len(gyro_seq) >= 7:
+                    #gyro_seq = np.convolve(gyro_seq, np.ones(7)/7, mode="same")
 
                 # -------- TARGETS --------
                 steer_target = float(gyro_seq[-1])   # yaw-rate

@@ -64,7 +64,7 @@ gt_actions = []
 timestamps = []
 
 #On this configuration 1 step= 1 frame
-MAX_STEPS = 1500   # or 200 it is like 6~7 seconds of video 
+MAX_STEPS = 1100   # or 200 it is like 6~7 seconds of video 
 print(f"Using {MAX_STEPS} steps (~{MAX_STEPS/30:.1f} seconds)")
 
 # =========================
