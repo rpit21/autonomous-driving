@@ -20,7 +20,7 @@ OUTPUT_FILE = "val_video_predictions.npz"
 # Load dataset (NO shuffle)
 # =========================
 ds_cfg = BDDVDatasetConfig(
-    root_dir="data/bddv/infe_l",
+    root_dir="data/bddv/infe_h",
     clip_len=10,
     stride=1,          # temporal continuity
     frame_step=1,
@@ -64,7 +64,7 @@ gt_actions = []
 timestamps = []
 
 #On this configuration 1 step= 1 frame
-MAX_STEPS = 300   # or 200 it is like 6~7 seconds of video 
+MAX_STEPS = 1500   # or 200 it is like 6~7 seconds of video 
 print(f"Using {MAX_STEPS} steps (~{MAX_STEPS/30:.1f} seconds)")
 
 # =========================

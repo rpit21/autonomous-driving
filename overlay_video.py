@@ -13,7 +13,7 @@ from models.vit_encoder import ViTEncoderConfig
 # =========================
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-VIDEO_PATH = "data/bddv/val/videos/cb2fdf4d-4b15f621.mov"
+VIDEO_PATH = "data/bddv/infe_h/videos/b2a5baf7-58519386.mov"
 OUTPUT_VIDEO = "overlay_output.mp4"
 
 CLIP_LEN = 10
@@ -76,7 +76,7 @@ def draw_bar(frame, x, y, value, scale, color):
 # Dataset
 # =========================
 ds_cfg = BDDVDatasetConfig(
-    root_dir="data/bddv/val",
+    root_dir="data/bddv/infe_h",
     clip_len=CLIP_LEN,
     stride=1,
     frame_step=1,
