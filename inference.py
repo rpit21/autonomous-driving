@@ -20,7 +20,7 @@ OUTPUT_FILE = "val_video_predictions.npz"
 # Load dataset (NO shuffle)
 # =========================
 ds_cfg = BDDVDatasetConfig(
-    root_dir="data/bddv/test",
+    root_dir="data/bddv/infe_l",
     clip_len=10,
     stride=1,          # temporal continuity
     frame_step=1,
