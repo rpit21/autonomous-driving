@@ -1,0 +1,44 @@
+Loading py-torch/2.8.0-gcc-11.4.0-cuda-12.6.3
+  Loading requirement: glibc/2.35-none-none gcc-runtime/11.4.0-none-none
+    boost/1.88.0-gcc-11.4.0 libpciaccess/0.17-gcc-11.4.0
+    libiconv/1.18-gcc-11.4.0 xz/5.6.3-gcc-11.4.0 zlib-ng/2.2.4-gcc-11.4.0
+    libxml2/2.13.5-gcc-11.4.0 ncurses/6.5-gcc-11.4.0 hwloc/2.11.1-gcc-11.4.0
+    openssl/3.4.1-gcc-11.4.0 libevent/2.1.12-gcc-11.4.0
+    numactl/2.0.18-gcc-11.4.0 bzip2/1.0.8-gcc-11.4.0 pigz/2.8-gcc-11.4.0
+    zstd/1.5.7-gcc-11.4.0 tar/1.35-gcc-11.4.0 gettext/0.23.1-gcc-11.4.0
+    libedit/3.1-20240808-gcc-11.4.0 krb5/1.21.3-gcc-11.4.0
+    libxcrypt/4.4.38-gcc-11.4.0 openssh/9.9p1-gcc-11.4.0 pmix/5.0.5-gcc-11.4.0
+    openmpi/5.0.7-gcc-11.4.0 valgrind/3.24.0-gcc-11.4.0 sleef/3.8-gcc-11.4.0
+    libmd/1.1.0-gcc-11.4.0 libbsd/0.12.2-gcc-11.4.0 expat/2.7.1-gcc-11.4.0
+    readline/8.2-gcc-11.4.0 gdbm/1.23-gcc-11.4.0 libffi/3.4.8-gcc-11.4.0
+    sqlite/3.46.0-gcc-11.4.0 util-linux-uuid/2.41-gcc-11.4.0
+    python/3.10.16-gcc-11.4.0 python-venv/1.0-none-none
+    py-typing-extensions/4.13.2-none-none py-setuptools/79.0.1-none-none
+    py-tqdm/4.67.1-none-none py-mpmath/1.3.0-none-none py-sympy/1.13.3-none-none
+    py-certifi/2025.4.26-none-none py-charset-normalizer/3.3.0-none-none
+    py-idna/3.4-none-none py-urllib3/2.1.0-none-none
+    py-requests/2.32.3-none-none libyaml/0.2.5-gcc-11.4.0
+    py-pyyaml/6.0.2-none-none py-pybind11/2.13.6-gcc-11.4.0
+    protobuf/3.13.0-gcc-11.4.0 py-six/1.17.0-none-none
+    py-protobuf/3.13.0-gcc-11.4.0 openblas/0.3.29-gcc-11.4.0
+    py-numpy/1.26.4-gcc-11.4.0 py-networkx/2.7.1-none-none
+    py-markupsafe/2.1.3-gcc-11.4.0 py-jinja2/3.1.4-none-none
+    py-fsspec/2024.10.0-none-none py-filelock/3.12.4-none-none
+    py-wheel/0.45.1-none-none py-astunparse/1.6.3-none-none
+    pthreadpool/2023-08-29-gcc-11.4.0 psimd/2020-05-17-none-none
+    nvtx/3.2.1-gcc-11.4.0 intel-tbb/2022.0.0-gcc-11.4.0
+    intel-oneapi-mkl/2024.2.2-none-none fxdiv/2020-04-17-gcc-11.4.0
+    fp16/2020-05-14-gcc-11.4.0 eigen/3.4.0-gcc-11.4.0 cuda/12.6.3-none-none
+    cudnn/8.9.7.29-12-none-none-cuda-12.6.3 cpuinfo/2025-03-21-gcc-11.4.0
+Using device: cuda
+Eval samples: 11940
+
+Evaluation MSE: 0.006214
+Clip-wise MAE:  0.050338
+Clip-wise RMSE: 0.056876
+Clip-wise MAX:  0.073665
+MAE steer:  0.055972
+MAE accel:  0.044704
+RMSE steer: 0.096888
+RMSE accel: 0.055135
+Saved rmse_hist.png
