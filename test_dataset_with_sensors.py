@@ -8,11 +8,11 @@ PLOT_DURATION_SEC = 40.0
 
 
 ds = BDDVDataset(BDDVDatasetConfig(
-    root_dir="data/bddv/infe_h",
+    root_dir="data/bddv/t",
     clip_len=10,
 ))
 
-TARGET_VIDEO = "b2a5baf7-58519386"
+TARGET_VIDEO = "0000f77c-cb820c98"
 
 target_idx = None
 for i, (video_path, start_frame) in enumerate(ds.index):
@@ -39,7 +39,7 @@ video_path, start_frame = ds.index[target_idx]
 
 # Load corresponding JSON
 video_stem = Path(video_path).stem
-json_path = Path("data/bddv/infe_h/info") / f"{video_stem}.json"
+json_path = Path("data/bddv/t/info") / f"{video_stem}.json"
 
 with open(json_path, "r") as f:
     info_json = json.load(f)
