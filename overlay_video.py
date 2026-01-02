@@ -13,11 +13,11 @@ from models.vit_encoder import ViTEncoderConfig
 # =========================
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-VIDEO_PATH = "data/bddv/t2/videos/0000f77c-6257be58.mov"
+VIDEO_PATH = "/homes/rmacias/data/infe_h/videos/b2a5baf7-58519386.mov"
 OUTPUT_VIDEO = "overlay_output.mp4"
 
 CLIP_LEN = 10
-MAX_STEPS = 300   # ≈ 10 seconds
+MAX_STEPS = 1000   # ≈ 10 seconds
 
 
 # =========================
@@ -39,44 +39,30 @@ def error_color(err):
         return (0, 0, 255)      # red
 
 
+def steering_direction(val, thresh=0.125):
+    if val > thresh:
+        return "TURN RIGHT"
+    elif val < -thresh:
+        return "TURN LEFT"
+    else:
+        return "STRAIGHT"
+
+
 def draw_bar(frame, x, y, value, scale, color):
     center = x + BAR_W // 2
     length = int((value / scale) * (BAR_W // 2))
     length = max(-BAR_W // 2, min(BAR_W // 2, length))
 
-    # outline
-    cv2.rectangle(
-        frame,
-        (x, y),
-        (x + BAR_W, y + BAR_H),
-        (120, 120, 120),
-        1,
-    )
-
-    # center line
-    cv2.line(
-        frame,
-        (center, y),
-        (center, y + BAR_H),
-        (120, 120, 120),
-        1,
-    )
-
-    # value bar
-    cv2.rectangle(
-        frame,
-        (center, y),
-        (center + length, y + BAR_H),
-        color,
-        -1,
-    )
+    cv2.rectangle(frame, (x, y), (x + BAR_W, y + BAR_H), (120, 120, 120), 1)
+    cv2.line(frame, (center, y), (center, y + BAR_H), (120, 120, 120), 1)
+    cv2.rectangle(frame, (center, y), (center + length, y + BAR_H), color, -1)
 
 
 # =========================
 # Dataset
 # =========================
 ds_cfg = BDDVDatasetConfig(
-    root_dir="data/bddv/t2",
+    root_dir="/homes/rmacias/data/infe_h",
     clip_len=CLIP_LEN,
     stride=1,
     frame_step=1,
@@ -134,58 +120,42 @@ with torch.no_grad():
 
         ret, frame = cap.read()
         if not ret:
-            print("Video ended early.")
             break
 
-        try:
-            frames, sensors, targets = dataset[idx]
-        except Exception as e:
-            print(f"Skipping idx {idx}: {e}")
-            continue
+        frames, sensors, targets = dataset[idx]
 
         frames = frames.unsqueeze(0).to(DEVICE)
         sensors = sensors.unsqueeze(0).to(DEVICE)
 
-        preds = model(frames, sensors)
-
-        pred = preds[0].cpu().numpy()
+        pred = model(frames, sensors)[0].cpu().numpy()
         gt = targets.numpy()
 
-        # -------------------------
-        # Compute errors
-        # -------------------------
+        gt_dir = steering_direction(gt[0])
+        pred_dir = steering_direction(pred[0])
+
         steer_err = abs(pred[0] - gt[0])
         acc_err = abs(pred[1] - gt[1])
 
         steer_col = error_color(steer_err)
         acc_col = error_color(acc_err)
 
-        # -------------------------
-        # Text
-        # -------------------------
-        x_text = 20
-        y_text = 30
-        dy = 24
+        x_text, y_text, dy = 20, 30, 24
 
-        cv2.putText(frame, f"GT steer:   {gt[0]:+.3f}",
-                    (x_text, y_text),
+        cv2.putText(frame, f"GT steer:   {gt[0]:+.3f}", (x_text, y_text),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2)
-
-        cv2.putText(frame, f"Pred steer: {pred[0]:+.3f}",
-                    (x_text, y_text + dy),
+        cv2.putText(frame, f"Pred steer: {pred[0]:+.3f}", (x_text, y_text + dy),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.65, steer_col, 2)
 
-        cv2.putText(frame, f"GT accel:   {gt[1]:+.3f}",
-                    (x_text, y_text + 2 * dy),
+        cv2.putText(frame, f"GT accel:   {gt[1]:+.3f}", (x_text, y_text + 2*dy),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2)
-
-        cv2.putText(frame, f"Pred accel: {pred[1]:+.3f}",
-                    (x_text, y_text + 3 * dy),
+        cv2.putText(frame, f"Pred accel: {pred[1]:+.3f}", (x_text, y_text + 3*dy),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.65, acc_col, 2)
 
-        # -------------------------
-        # Bars
-        # -------------------------
+        cv2.putText(frame, f"GT dir:   {gt_dir}", (x_text, y_text + 10*dy),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2)
+        cv2.putText(frame, f"Pred dir: {pred_dir}", (x_text, y_text + 11*dy),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.65, steer_col, 2)
+
         x_bar = 20
         y_bar = y_text + 4 * dy + 10
 
@@ -193,8 +163,8 @@ with torch.no_grad():
         draw_bar(frame, x_bar, y_bar + BAR_H + 4, pred[0], STEER_SCALE, steer_col)
 
         cv2.putText(frame, "Steering (GT / Pred)",
-                    (x_bar, y_bar - 6),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                (x_bar, y_bar - 6),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
         y_bar2 = y_bar + 2 * BAR_H + 35
 
@@ -202,8 +172,8 @@ with torch.no_grad():
         draw_bar(frame, x_bar, y_bar2 + BAR_H + 4, pred[1], ACC_SCALE, acc_col)
 
         cv2.putText(frame, "Acceleration (GT / Pred)",
-                    (x_bar, y_bar2 - 6),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                (x_bar, y_bar2 - 6),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
         writer.write(frame)
 
